@@ -25,6 +25,7 @@ public class LoginActivity extends Activity {
         if (currentUser != null) {
             UserSingleton.getInstance().setUser(currentUser);
             startActivity(new Intent(getApplicationContext(),MapsActivity.class));
+            this.finish();
         }
     }
 
@@ -53,6 +54,7 @@ public class LoginActivity extends Activity {
                             pd.cancel();
                             loginDialog.cancel();
                             startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                            LoginActivity.this.finish();
                         } else {
                             pd.cancel();
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -112,6 +114,7 @@ public class LoginActivity extends Activity {
                                     progressDialog.cancel();
                                     signUpDialog.cancel();
                                     startActivity(new Intent(getApplicationContext(),MapsActivity.class));
+                                    LoginActivity.this.finish();
                                 } else {
                                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                     System.out.println();

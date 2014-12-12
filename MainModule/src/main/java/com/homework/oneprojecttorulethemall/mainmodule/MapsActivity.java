@@ -38,6 +38,7 @@ public class MapsActivity extends FragmentActivity {
         switch (item.getItemId()) {
             case (R.id.logout):
                 ParseUser.logOut();
+                this.finish();
                 break;
 
         }
