@@ -104,9 +104,20 @@
             android:layout_alignLeft="@+id/musicCheckBox" android:layout_alignStart="@+id/musicCheckBox"
             android:checked="false"/>
     <Button
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Done"
             android:onClick="done"
-            android:id="@+id/done" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"/>
+            android:id="@+id/done"
+            android:layout_marginTop="27dp"
+            android:layout_below="@+id/booksCheckBox" android:layout_toRightOf="@+id/nameTextView"
+            android:layout_toEndOf="@+id/nameTextView"/>
+    <Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="I will do it later"
+            android:id="@+id/cancel"
+            android:onClick="cancel"
+            android:layout_alignTop="@+id/done" android:layout_alignRight="@+id/hobbysTextView"
+            android:layout_alignEnd="@+id/hobbysTextView"/>
 </RelativeLayout>

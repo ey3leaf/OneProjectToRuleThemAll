@@ -2,6 +2,8 @@ package com.homework.oneprojecttorulethemall.mainmodule;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
@@ -12,10 +14,22 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.parse.ParseUser;
 
 public class MapsActivity extends FragmentActivity {
+
     private ListView listView;
     private FriendsAdapter adapter;
     SupportMapFragment mapFragment;
     GoogleMap map;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Store our shared preference
+        SharedPreferences sp = getSharedPreferences("SharedPref", 0);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("active", true);
+        ed.apply();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +62,20 @@ public class MapsActivity extends FragmentActivity {
                 new AlertDialog.Builder(this).setMessage("Are you sure you want to exit?").setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                SharedPreferences sp = getSharedPreferences("SharedPref", 0);
+                                SharedPreferences.Editor ed = sp.edit();
+                                ed.putBoolean("active", false);
+                                ed.apply();
+
                                 ParseUser.logOut();
                                 MapsActivity.this.finish();
                             }
                         })
                         .setNegativeButton("No", null)
                         .show();
-                //ParseUser.logOut();
-                //this.finish();
                 break;
+            case (R.id.profile):
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
 
         }
         return super.onOptionsItemSelected(item);
