@@ -4,15 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
+import android.widget.Toast;
+import com.parse.*;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -23,13 +23,22 @@ public class ProfileActivity extends Activity {
 
     private ImageView avatar;
     private Bitmap bitmap;
+    private EditText name, surname;
+    private CheckBox[] checkBoxes;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private ParseQuery<ParseObject> query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        avatar = (ImageView) findViewById(R.id.avatar);
+        query = ParseQuery.getQuery("DATA");
+        query.whereEqualTo("ID", ParseObject.createWithoutData("ID",UserSingleton.getInstance().getUser().getObjectId()));
+
+        InitializeFields();
+        FillProfileDataFromSharedPrefs();
     }
 
     public void camera(View v) {
@@ -50,15 +59,17 @@ public class ProfileActivity extends Activity {
 
     public void done(View v) {
         List<String> hobbies = getHobbies();
-        SaveIntoParse(bitmap,hobbies);
-        SharedPreferences sp = getSharedPreferences("SharedPref", 0);
-        if (!sp.getBoolean("active", false))
+
+        SaveIntoParseAndSharedPrefs(hobbies);
+
+        sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
+        if (!sharedPreferences.getBoolean("active", false))
             startActivity(new Intent(getApplicationContext(), MapsActivity.class));
         this.finish();
     }
 
     public void cancel(View v) {
-        SharedPreferences sp = getSharedPreferences("SharedPref", 0);
+        SharedPreferences sp = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
         if (!sp.getBoolean("active", false))
             startActivity(new Intent(getApplicationContext(), MapsActivity.class));
         this.finish();
@@ -66,38 +77,95 @@ public class ProfileActivity extends Activity {
 
     private List<String> getHobbies() {
         List<String> hobbies = new ArrayList<String>();
-        CheckBox[] checkBoxes = {(CheckBox) findViewById(R.id.shopingCheckBox),
+        sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
+        editor = sharedPreferences.edit();
+        for (CheckBox checkBox : checkBoxes) {
+            editor.putBoolean(checkBox.getText().toString(), false);
+            if (checkBox.isChecked()) {
+                hobbies.add(checkBox.getText().toString());
+                editor.putBoolean(checkBox.getText().toString(), true);
+            }
+        }
+        editor.apply();
+        return hobbies;
+    }
+
+    private void SaveIntoParseAndSharedPrefs(final List<String> hobbies) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("DATA");
+        query.whereEqualTo("ID", ParseObject.createWithoutData("ID",UserSingleton.getInstance().getUser().getObjectId()));
+
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e == null) {
+                    saveData(parseObject, hobbies);
+                } else {
+                    saveData(new ParseObject("DATA"), hobbies);
+                    Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void saveData(ParseObject parseObject, List<String> hobbies) {
+        sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
+        editor = sharedPreferences.edit();
+
+        parseObject.put("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
+        parseObject.put("NAME", name.getText().toString());
+        parseObject.put("SURNAME", surname.getText().toString());
+        parseObject.put("HOBBIES", hobbies);
+
+        editor.putString("NAME", name.getText().toString());
+        editor.putString("SURNAME", surname.getText().toString());
+        editor.apply();
+
+        if (bitmap != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] data = stream.toByteArray();
+            ParseFile imgFile = new ParseFile(surname.getText().toString() + ".png", data);
+            imgFile.saveInBackground();
+            parseObject.put("AVATAR", imgFile);
+        }
+        parseObject.saveInBackground();
+    }
+
+    private void FillProfileDataFromSharedPrefs() {
+        sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                ParseFile imageFile = parseObject.getParseFile("AVATAR");
+                imageFile.getDataInBackground(new GetDataCallback() {
+                    public void done(byte[] data, ParseException e) {
+                        if (e == null) {
+                            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                            avatar.setImageBitmap(bmp);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        name.setText(sharedPreferences.getString("NAME", ""));
+        surname.setText(sharedPreferences.getString("SURNAME", ""));
+
+        for (CheckBox checkBox : checkBoxes) {
+            checkBox.setChecked(sharedPreferences.getBoolean(checkBox.getText().toString(), false));
+        }
+    }
+
+    private void InitializeFields() {
+        avatar = (ImageView) findViewById(R.id.avatar);
+        name = (EditText) findViewById(R.id.nameField);
+        surname = (EditText) findViewById(R.id.nicknameField);
+        checkBoxes = new CheckBox[]{(CheckBox) findViewById(R.id.shopingCheckBox),
                 (CheckBox) findViewById(R.id.sportCheckBox),
                 (CheckBox) findViewById(R.id.travelingCheckBox),
                 (CheckBox) findViewById(R.id.hangoutCheckBox),
                 (CheckBox) findViewById(R.id.musicCheckBox),
                 (CheckBox) findViewById(R.id.booksCheckBox)};
-        for (CheckBox checkBox : checkBoxes) {
-            if (checkBox.isChecked()) {
-                hobbies.add(checkBox.getText().toString());
-            }
-        }
-        return hobbies;
-    }
-
-    private void SaveIntoParse(Bitmap bitmap, List<String> hobbies) {
-        EditText name = (EditText) findViewById(R.id.nameField);
-        EditText surname = (EditText) findViewById(R.id.nicknameField);
-
-        ParseObject userInfo = new ParseObject("DATA");
-        userInfo.put("ID", ParseObject.createWithoutData("ID",ParseUser.getCurrentUser().getObjectId()));
-        userInfo.put("NAME", name.getText().toString());
-        userInfo.put("SURNAME", surname.getText().toString());
-        userInfo.put("HOBBIES", hobbies);
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
-        byte[] data = stream.toByteArray();
-        ParseFile imgFile = new ParseFile(surname.getText().toString()+".png",data);
-        imgFile.saveInBackground();
-        userInfo.put("AVATAR", imgFile);
-
-        userInfo.saveInBackground();
-
     }
 }

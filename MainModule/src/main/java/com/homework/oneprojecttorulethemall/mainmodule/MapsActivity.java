@@ -25,7 +25,7 @@ public class MapsActivity extends FragmentActivity {
         super.onStart();
 
         // Store our shared preference
-        SharedPreferences sp = getSharedPreferences("SharedPref", 0);
+        SharedPreferences sp = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("active", true);
         ed.apply();
@@ -62,7 +62,7 @@ public class MapsActivity extends FragmentActivity {
                 new AlertDialog.Builder(this).setMessage("Are you sure you want to exit?").setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                SharedPreferences sp = getSharedPreferences("SharedPref", 0);
+                                SharedPreferences sp = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
                                 SharedPreferences.Editor ed = sp.edit();
                                 ed.putBoolean("active", false);
                                 ed.apply();
