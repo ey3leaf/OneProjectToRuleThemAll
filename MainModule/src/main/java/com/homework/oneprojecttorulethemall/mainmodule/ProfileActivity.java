@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 import com.parse.*;
 
 import java.io.ByteArrayOutputStream;
@@ -20,7 +19,7 @@ import java.util.List;
 
 
 public class ProfileActivity extends Activity {
-
+    private static boolean isFirstStart = true;
     private ImageView avatar;
     private Bitmap bitmap;
     private EditText name, surname;
@@ -35,10 +34,20 @@ public class ProfileActivity extends Activity {
         setContentView(R.layout.activity_profile);
 
         query = ParseQuery.getQuery("DATA");
-        query.whereEqualTo("ID", ParseObject.createWithoutData("ID",UserSingleton.getInstance().getUser().getObjectId()));
+        query.whereEqualTo("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
 
         InitializeFields();
+
+        avatar.setImageResource(R.drawable.contact_default);
+        avatar.setDrawingCacheEnabled(true);
+        avatar.buildDrawingCache();
         FillProfileDataFromSharedPrefs();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isFirstStart = false;
     }
 
     public void camera(View v) {
@@ -91,8 +100,8 @@ public class ProfileActivity extends Activity {
     }
 
     private void SaveIntoParseAndSharedPrefs(final List<String> hobbies) {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("DATA");
-        query.whereEqualTo("ID", ParseObject.createWithoutData("ID",UserSingleton.getInstance().getUser().getObjectId()));
+        query = ParseQuery.getQuery("DATA");
+        query.whereEqualTo("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
 
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -101,7 +110,6 @@ public class ProfileActivity extends Activity {
                     saveData(parseObject, hobbies);
                 } else {
                     saveData(new ParseObject("DATA"), hobbies);
-                    Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -120,12 +128,20 @@ public class ProfileActivity extends Activity {
         editor.putString("SURNAME", surname.getText().toString());
         editor.apply();
 
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (bitmap != null) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] data = stream.toByteArray();
+
             ParseFile imgFile = new ParseFile(surname.getText().toString() + ".png", data);
             imgFile.saveInBackground();
+            parseObject.put("AVATAR", imgFile);
+        } else {
+            Bitmap bm = avatar.getDrawingCache();
+            bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] data = stream.toByteArray();
+            ParseFile imgFile = new ParseFile(surname.getText().toString() + ".png", data);
             parseObject.put("AVATAR", imgFile);
         }
         parseObject.saveInBackground();
@@ -133,21 +149,26 @@ public class ProfileActivity extends Activity {
 
     private void FillProfileDataFromSharedPrefs() {
         sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                ParseFile imageFile = parseObject.getParseFile("AVATAR");
-                imageFile.getDataInBackground(new GetDataCallback() {
-                    public void done(byte[] data, ParseException e) {
-                        if (e == null) {
-                            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                            avatar.setImageBitmap(bmp);
-                        }
+        if (!isFirstStart) {
+            query.getFirstInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    try {
+                        ParseFile imageFile = parseObject.getParseFile("AVATAR");
+                        imageFile.getDataInBackground(new GetDataCallback() {
+                            public void done(byte[] data, ParseException e) {
+                                if (e == null) {
+                                    Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                    avatar.setImageBitmap(bmp);
+                                }
+                            }
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                });
-            }
-        });
-
+                }
+            });
+        }
 
         name.setText(sharedPreferences.getString("NAME", ""));
         surname.setText(sharedPreferences.getString("SURNAME", ""));

@@ -69,6 +69,7 @@ public class MapsActivity extends FragmentActivity {
 
                                 ParseUser.logOut();
                                 MapsActivity.this.finish();
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             }
                         })
                         .setNegativeButton("No", null)
