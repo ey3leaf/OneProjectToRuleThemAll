@@ -1,5 +1,7 @@
 package com.homework.oneprojecttorulethemall.mainmodule;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
@@ -21,7 +23,6 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
 
         listView = (ListView) findViewById(R.id.left_drawer);
-        String[] arr = {"test1", "test2"};
         adapter = new FriendsAdapter(getApplicationContext());
         listView.setAdapter(adapter);
 
@@ -44,8 +45,17 @@ public class MapsActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case (R.id.logout):
-                ParseUser.logOut();
-                this.finish();
+                new AlertDialog.Builder(this).setMessage("Are you sure you want to exit?").setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ParseUser.logOut();
+                                MapsActivity.this.finish();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+                //ParseUser.logOut();
+                //this.finish();
                 break;
 
         }
