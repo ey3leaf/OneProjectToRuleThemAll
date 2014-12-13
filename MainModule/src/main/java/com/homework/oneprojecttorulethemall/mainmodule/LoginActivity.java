@@ -113,7 +113,8 @@ public class LoginActivity extends Activity {
                                     Toast.makeText(getApplicationContext(), "Welcome to Her S Goru Solutions!", Toast.LENGTH_LONG).show();
                                     progressDialog.cancel();
                                     signUpDialog.cancel();
-                                    startActivity(new Intent(getApplicationContext(),MapsActivity.class));
+                                    startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+                                    //startActivity(new Intent(getApplicationContext(),MapsActivity.class));
                                     LoginActivity.this.finish();
                                 } else {
                                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();

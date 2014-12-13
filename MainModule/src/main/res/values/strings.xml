@@ -3,5 +3,8 @@
 
     <string name="app_name">OneProjectToRuleThemAll</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
