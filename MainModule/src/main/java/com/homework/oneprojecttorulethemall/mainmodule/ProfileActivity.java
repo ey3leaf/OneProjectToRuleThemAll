@@ -8,8 +8,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +50,16 @@ public class ProfileActivity extends Activity {
 
     public void done(View v) {
         List<String> hobbies = getHobbies();
-        for (String hobby : hobbies) {
-            System.out.println(hobby);
-        }
+        SaveIntoParse(bitmap,hobbies);
+        SharedPreferences sp = getSharedPreferences("SharedPref", 0);
+        if (!sp.getBoolean("active", false))
+            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+        this.finish();
     }
 
     public void cancel(View v) {
         SharedPreferences sp = getSharedPreferences("SharedPref", 0);
-        if (!sp.getBoolean("active",false))
+        if (!sp.getBoolean("active", false))
             startActivity(new Intent(getApplicationContext(), MapsActivity.class));
         this.finish();
     }
@@ -71,5 +78,26 @@ public class ProfileActivity extends Activity {
             }
         }
         return hobbies;
+    }
+
+    private void SaveIntoParse(Bitmap bitmap, List<String> hobbies) {
+        EditText name = (EditText) findViewById(R.id.nameField);
+        EditText surname = (EditText) findViewById(R.id.nicknameField);
+
+        ParseObject userInfo = new ParseObject("DATA");
+        userInfo.put("ID", ParseObject.createWithoutData("ID",ParseUser.getCurrentUser().getObjectId()));
+        userInfo.put("NAME", name.getText().toString());
+        userInfo.put("SURNAME", surname.getText().toString());
+        userInfo.put("HOBBIES", hobbies);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+        byte[] data = stream.toByteArray();
+        ParseFile imgFile = new ParseFile(surname.getText().toString()+".png",data);
+        imgFile.saveInBackground();
+        userInfo.put("AVATAR", imgFile);
+
+        userInfo.saveInBackground();
+
     }
 }
