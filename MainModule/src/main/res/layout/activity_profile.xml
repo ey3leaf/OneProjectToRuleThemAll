@@ -1,0 +1,112 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                tools:context="com.homework.oneprojecttorulethemall.mainmodule.ProfileActivity">
+
+    <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/avatar" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Name:"
+            android:id="@+id/nameTextView" android:layout_alignParentTop="true" android:layout_centerHorizontal="true"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nameField" android:layout_below="@+id/nameTextView" android:layout_alignLeft="@+id/nameTextView"
+            android:layout_alignStart="@+id/nameTextView" android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+    <Button
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Avatar"
+            android:onClick="camera"
+            android:id="@+id/camera" android:layout_below="@+id/avatar" android:layout_alignLeft="@+id/avatar"
+            android:layout_alignStart="@+id/avatar"/>
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_alignBottom="@+id/camera"
+            android:layout_marginBottom="-10dp" android:id="@+id/divider"/>
+    <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Surname (or Nickname):"
+            android:id="@+id/surnameTextView" android:layout_below="@+id/nameField" android:layout_alignLeft="@+id/nameField"
+            android:layout_alignStart="@+id/nameField"
+            android:layout_marginTop="10dp"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nicknameField"
+            android:layout_below="@+id/surnameTextView" android:layout_alignLeft="@+id/surnameTextView"
+            android:layout_alignStart="@+id/surnameTextView" android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Choose your hobbys:"
+            android:id="@+id/hobbysTextView" android:layout_alignTop="@+id/divider" android:layout_alignLeft="@+id/divider"
+            android:layout_alignStart="@+id/divider" android:layout_marginTop="27dp"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shoping"
+            android:id="@+id/shopingCheckBox" android:layout_below="@+id/hobbysTextView"
+            android:layout_alignLeft="@+id/hobbysTextView" android:layout_alignStart="@+id/hobbysTextView"
+            android:checked="false"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sport"
+            android:id="@+id/sportCheckBox" android:layout_below="@+id/shopingCheckBox"
+            android:layout_alignLeft="@+id/shopingCheckBox" android:layout_alignStart="@+id/shopingCheckBox"
+            android:checked="false"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Traveling"
+            android:id="@+id/travelingCheckBox" android:layout_below="@+id/sportCheckBox"
+            android:layout_alignLeft="@+id/sportCheckBox" android:layout_alignStart="@+id/sportCheckBox"
+            android:checked="false"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hangout"
+            android:id="@+id/hangoutCheckBox" android:layout_below="@+id/travelingCheckBox"
+            android:layout_alignLeft="@+id/travelingCheckBox" android:layout_alignStart="@+id/travelingCheckBox"
+            android:checked="false"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Music"
+            android:id="@+id/musicCheckBox" android:layout_below="@+id/hangoutCheckBox"
+            android:layout_alignLeft="@+id/hangoutCheckBox" android:layout_alignStart="@+id/hangoutCheckBox"
+            android:checked="false"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Books"
+            android:id="@+id/booksCheckBox" android:layout_below="@+id/musicCheckBox"
+            android:layout_alignLeft="@+id/musicCheckBox" android:layout_alignStart="@+id/musicCheckBox"
+            android:checked="false"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:onClick="done"
+            android:id="@+id/done" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"/>
+</RelativeLayout>
