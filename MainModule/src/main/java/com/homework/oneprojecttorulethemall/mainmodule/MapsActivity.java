@@ -1,10 +1,9 @@
 package com.homework.oneprojecttorulethemall.mainmodule;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +12,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.parse.ParseUser;
 
-public class MapsActivity extends FragmentActivity {
+import java.util.ArrayList;
 
+public class MapsActivity extends FragmentActivity implements ServiceConnection{
+
+    private ParseService service;
     private ListView listView;
     private FriendsAdapter adapter;
     SupportMapFragment mapFragment;
@@ -29,6 +31,7 @@ public class MapsActivity extends FragmentActivity {
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("active", true);
         ed.apply();
+
     }
 
     @Override
@@ -38,6 +41,8 @@ public class MapsActivity extends FragmentActivity {
 
         listView = (ListView) findViewById(R.id.left_drawer);
         adapter = new FriendsAdapter(getApplicationContext());
+        UserSingleton.getInstance().setFriendList(new ArrayList<Friend>());
+
         listView.setAdapter(adapter);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -47,6 +52,10 @@ public class MapsActivity extends FragmentActivity {
             return;
         }
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        Intent intent = new Intent(getApplicationContext(), ParseService.class);
+        startService(intent);
+        bindService(intent, this, 0);
     }
 
     @Override
@@ -80,5 +89,31 @@ public class MapsActivity extends FragmentActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateView(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                listView.invalidateViews();
+            }
+        });
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        service = ((ParseBinder) iBinder).getService();
+        service.setActivity(this);
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(this);
     }
 }

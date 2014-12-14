@@ -47,7 +47,9 @@
         <activity
             android:name="com.homework.oneprojecttorulethemall.mainmodule.ProfileActivity"
             android:label="@string/title_activity_profile" >
+
         </activity>
+        <service android:name=".ParseService"/>
     </application>
 
 </manifest>

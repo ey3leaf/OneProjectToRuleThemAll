@@ -2,9 +2,12 @@ package com.homework.oneprojecttorulethemall.mainmodule;
 
 import com.parse.ParseUser;
 
+import java.util.List;
+
 public class UserSingleton {
     private static UserSingleton instance;
     private ParseUser user;
+    private List<Friend> friendList;
 
     private UserSingleton() {
     }
@@ -21,5 +24,13 @@ public class UserSingleton {
 
     public void setUser(ParseUser user) {
         this.user = user;
+    }
+
+    public List<Friend> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(List<Friend> friendList) {
+        this.friendList = friendList;
     }
 }
