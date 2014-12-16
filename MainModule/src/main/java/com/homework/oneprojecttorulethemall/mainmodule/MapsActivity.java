@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,7 +37,7 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private ParseService service;
-    private ListView listView;
+    private ExpandableListView listView;
     private FriendsAdapter adapter;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
@@ -47,24 +47,17 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
 
     private void InitializeListView() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        listView = (ListView) findViewById(R.id.left_drawer);
+        listView = (ExpandableListView) findViewById(R.id.left_drawer);
         adapter = new FriendsAdapter(getApplicationContext(), map);
         UserSingleton.getInstance().setFriendList(new ArrayList<Friend>());
 
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 drawer.closeDrawers();
                 animateToLocation(UserSingleton.getInstance().getFriendList().get(i).getLocation());
-            }
-        });
-
-        listView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                //TODO Open chat
-                return false;
+                return true;
             }
         });
     }
@@ -109,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
     @Override
     public void onConnected(Bundle bundle) {
         locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(locationUpdateInterval);
         fusedAPI.requestLocationUpdates(googleApiClient, locationRequest, this);
         while (fusedAPI.getLastLocation(googleApiClient) == null) {

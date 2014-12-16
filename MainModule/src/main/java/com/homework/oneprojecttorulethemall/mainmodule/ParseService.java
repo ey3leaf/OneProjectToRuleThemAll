@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -26,28 +27,50 @@ public class ParseService extends Service implements Runnable {
     @Override
     public void run() {
         while (true) {
+            parseDATA();
+            parseMessages();
 
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("DATA");
-            query.whereNotEqualTo("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> list, ParseException e) {
-                    UserSingleton.getInstance().getFriendList().clear();
+            SystemClock.sleep(60000);
+        }
+    }
+
+    private void parseDATA() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("DATA");
+        query.whereNotEqualTo("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                UserSingleton.getInstance().getFriendList().clear();
+                if (e == null) {
                     for (ParseObject parseObject : list) {
                         UserSingleton.getInstance().getFriendList().add(new Friend(parseObject.getParseFile("AVATAR"),
                                 parseObject.getString("NAME") + " " + parseObject.getString("SURNAME"),
                                 parseObject.getParseGeoPoint("LOCATION"),
                                 parseObject.getObjectId()));
                     }
-                    if (activity != null) {
-                        activity.updateView();
-                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "No connection", Toast.LENGTH_SHORT).show();
                 }
-            });
+                if (activity != null) {
+                    activity.updateView();
+                }
+            }
+        });
+    }
 
-            SystemClock.sleep(60000);
-
-        }
+    private void parseMessages() {
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Messages");
+        query.whereEqualTo("IS_READ",false);
+        query.whereEqualTo("TO",UserSingleton.getInstance().getUser().getObjectId());
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                for (ParseObject parseObject : list) {
+                    parseObject.put("IS_READ",true);
+                    parseObject.saveInBackground();
+                }
+            }
+        });
     }
 
     @Override
