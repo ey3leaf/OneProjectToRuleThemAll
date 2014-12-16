@@ -102,7 +102,6 @@ public class ProfileActivity extends Activity {
     private void SaveIntoParseAndSharedPrefs(final List<String> hobbies) {
         query = ParseQuery.getQuery("DATA");
         query.whereEqualTo("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
-
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {

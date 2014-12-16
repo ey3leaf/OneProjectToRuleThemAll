@@ -35,16 +35,17 @@ public class ParseService extends Service implements Runnable {
                     UserSingleton.getInstance().getFriendList().clear();
                     for (ParseObject parseObject : list) {
                         UserSingleton.getInstance().getFriendList().add(new Friend(parseObject.getParseFile("AVATAR"),
-                                parseObject.getString("NAME") + " " + parseObject.getString("SURNAME"), parseObject.getObjectId()));
+                                parseObject.getString("NAME") + " " + parseObject.getString("SURNAME"),
+                                parseObject.getParseGeoPoint("LOCATION"),
+                                parseObject.getObjectId()));
                     }
                     if (activity != null) {
                         activity.updateView();
                     }
-
                 }
             });
 
-            SystemClock.sleep(5000);
+            SystemClock.sleep(60000);
 
         }
     }

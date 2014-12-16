@@ -1,12 +1,12 @@
 package com.homework.oneprojecttorulethemall.mainmodule;
 
-import android.location.Location;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 
 public class Friend {
     private ParseFile friendPhoto;
     private String name, id;
-    private Location location;
+    private ParseGeoPoint location;
 
     public Friend(ParseFile friendPhoto, String name,String id) {
         this.friendPhoto = friendPhoto;
@@ -14,7 +14,7 @@ public class Friend {
         this.id = id;
     }
 
-    public Friend(ParseFile friendPhoto, String name, Location location, String id) {
+    public Friend(ParseFile friendPhoto, String name, ParseGeoPoint location, String id) {
         this.friendPhoto = friendPhoto;
         this.name = name;
         this.location = location;
@@ -29,7 +29,7 @@ public class Friend {
         return name;
     }
 
-    public Location getLocation() {
+    public ParseGeoPoint getLocation() {
         return location;
     }
 
