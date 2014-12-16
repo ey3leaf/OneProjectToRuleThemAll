@@ -9,10 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
+import com.parse.*;
 
 public class LoginActivity extends Activity {
 
@@ -27,6 +24,7 @@ public class LoginActivity extends Activity {
             startActivity(new Intent(getApplicationContext(),MapsActivity.class));
             this.finish();
         }
+        ParsePush.subscribeInBackground("One" + UserSingleton.getInstance().getUser().getObjectId());
     }
 
     public void login(View v) {

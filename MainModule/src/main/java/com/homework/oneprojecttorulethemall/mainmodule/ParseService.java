@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.widget.Toast;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
+import com.parse.*;
 
 import java.util.List;
 
@@ -60,13 +57,17 @@ public class ParseService extends Service implements Runnable {
 
     private void parseMessages() {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Messages");
-        query.whereEqualTo("IS_READ",false);
-        query.whereEqualTo("TO",UserSingleton.getInstance().getUser().getObjectId());
+        query.whereEqualTo("IS_READ", false);
+        query.whereEqualTo("TO", UserSingleton.getInstance().getUser().getObjectId());
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
                 for (ParseObject parseObject : list) {
-                    parseObject.put("IS_READ",true);
+                    ParsePush push = new ParsePush();
+                    push.setChannel("One" + UserSingleton.getInstance().getUser().getObjectId());
+                    push.setMessage(" You have a new message");
+                    push.sendInBackground();
+                    parseObject.put("IS_READ", true);
                     parseObject.saveInBackground();
                 }
             }
