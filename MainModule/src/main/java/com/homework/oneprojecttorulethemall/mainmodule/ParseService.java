@@ -22,6 +22,13 @@ public class ParseService extends Service implements Runnable {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        parseDATA();
+        parseMessages();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     public void run() {
         while (true) {
             parseDATA();
@@ -43,7 +50,7 @@ public class ParseService extends Service implements Runnable {
                         UserSingleton.getInstance().getFriendList().add(new Friend(parseObject.getParseFile("AVATAR"),
                                 parseObject.getString("NAME") + " " + parseObject.getString("SURNAME"),
                                 parseObject.getParseGeoPoint("LOCATION"),
-                                parseObject.getObjectId()));
+                                parseObject.getParseObject("ID").getObjectId()));
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "No connection", Toast.LENGTH_SHORT).show();

@@ -11,6 +11,8 @@
             android:layout_height="200dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/chat"
+            android:maxLines="@integer/google_play_services_version"
+            android:scrollbars="vertical"
             />
     <EditText
             android:layout_width="201dp"

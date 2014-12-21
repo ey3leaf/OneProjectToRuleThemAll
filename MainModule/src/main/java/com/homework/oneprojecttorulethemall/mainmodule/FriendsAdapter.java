@@ -1,6 +1,7 @@
 package com.homework.oneprojecttorulethemall.mainmodule;
 
 import android.content.Context;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class FriendsAdapter extends BaseExpandableListAdapter {
@@ -83,10 +85,10 @@ public class FriendsAdapter extends BaseExpandableListAdapter {
         LinearLayout childLayout = (LinearLayout) inflater.inflate(R.layout.drawer_child_view, viewGroup, false);
 
         final TextView chat = (TextView) childLayout.findViewById(R.id.chat);
+        chat.setMovementMethod(new ScrollingMovementMethod());
         final EditText message = (EditText) childLayout.findViewById(R.id.message);
         Button send = (Button) childLayout.findViewById(R.id.send);
 
-        //chat.setText(getTextFromParse(i));
         getTextFromParse(i, chat);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +97,6 @@ public class FriendsAdapter extends BaseExpandableListAdapter {
                         message.getText().toString() + "\n");
                 saveMessageIntoParse(message.getText().toString(), UserSingleton.getInstance().getFriendList().get(i).getId());
                 message.setText("");
-
-
             }
         });
 
@@ -108,14 +108,17 @@ public class FriendsAdapter extends BaseExpandableListAdapter {
         parseMessage.put("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
         parseMessage.put("FROM", UserSingleton.getInstance().getUser().getUsername());
         parseMessage.put("TO", toID);
-        parseMessage.put("IS_READ",false);
+        parseMessage.put("IS_READ", false);
         parseMessage.put("MESSAGE", message);
         parseMessage.saveInBackground();
     }
 
-    private String getTextFromParse(int position, final TextView chat) {
+    private void getTextFromParse(int position, final TextView chat) {
+
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Messages");
-        query.whereEqualTo("TO", UserSingleton.getInstance().getFriendList().get(position).getId());
+        String[] peopleIDs = {UserSingleton.getInstance().getUser().getObjectId(),
+                UserSingleton.getInstance().getFriendList().get(position).getId()};
+        query.whereContainedIn("TO", Arrays.asList(peopleIDs));
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -128,7 +131,6 @@ public class FriendsAdapter extends BaseExpandableListAdapter {
                 }
             }
         });
-        return "";
     }
 
     @Override

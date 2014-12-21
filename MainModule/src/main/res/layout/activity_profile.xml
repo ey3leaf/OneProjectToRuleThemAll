@@ -6,6 +6,7 @@
                 android:paddingRight="10dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+
                 tools:context="com.homework.oneprojecttorulethemall.mainmodule.ProfileActivity">
 
     <ImageView
@@ -79,9 +80,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Traveling"
-            android:id="@+id/travelingCheckBox" android:layout_below="@+id/sportCheckBox"
-            android:layout_alignLeft="@+id/sportCheckBox" android:layout_alignStart="@+id/sportCheckBox"
-            android:checked="false"/>
+            android:id="@+id/travelingCheckBox"
+            android:checked="false" android:layout_alignTop="@+id/shopingCheckBox"
+            android:layout_toRightOf="@+id/camera" android:layout_toEndOf="@+id/camera"/>
     <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,9 +94,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Music"
-            android:id="@+id/musicCheckBox" android:layout_below="@+id/hangoutCheckBox"
-            android:layout_alignLeft="@+id/hangoutCheckBox" android:layout_alignStart="@+id/hangoutCheckBox"
-            android:checked="false"/>
+            android:id="@+id/musicCheckBox"
+            android:checked="false" android:layout_alignTop="@+id/travelingCheckBox"
+            android:layout_alignLeft="@+id/done" android:layout_alignStart="@+id/done"/>
     <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
