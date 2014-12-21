@@ -94,6 +94,7 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
 
         SharedPreferences sp = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
         SharedPreferences.Editor ed = sp.edit();
+        mapType = sp.getString("MAP","Normal");
         ed.putBoolean("active", true);
         ed.apply();
 
@@ -128,8 +129,6 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-        mapType = "Normal";
 
         InitializeMap();
         InitializeGoogleApiClient();
