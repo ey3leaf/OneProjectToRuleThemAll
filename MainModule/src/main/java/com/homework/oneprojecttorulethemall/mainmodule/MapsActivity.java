@@ -43,7 +43,12 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
     private GoogleMap map;
     private FusedLocationProviderApi fusedAPI = LocationServices.FusedLocationApi;
     private long locationUpdateInterval = 2500;
+    private static String mapType;
     private static boolean isFirstStart = true;
+
+    public static void setMapType(String mapType) {
+        MapsActivity.mapType = mapType;
+    }
 
     private void InitializeListView() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -69,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
             finish();
             return;
         }
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
         map.setMyLocationEnabled(true);
     }
 
@@ -91,6 +96,11 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("active", true);
         ed.apply();
+
+        if (mapType.equals("Normal")) map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        else if (mapType.equals("Hybrid")) map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        else if (mapType.equals("Satellite")) map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        else if (mapType.equals("Terrain")) map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
     }
 
     @Override
@@ -118,6 +128,8 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        mapType = "Normal";
 
         InitializeMap();
         InitializeGoogleApiClient();
@@ -156,7 +168,10 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
                 break;
             case (R.id.profile):
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-
+                break;
+            case R.id.settings:
+                startActivityForResult(new Intent(getApplicationContext(), SettingsActivity.class), 1);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -236,6 +251,6 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        googleApiClient.connect();
     }
 }

@@ -1,0 +1,100 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                tools:context="com.homework.oneprojecttorulethemall.mainmodule.SettingsActivity">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Map type: "
+            android:id="@+id/textView5" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+    <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/map_type_spinner"
+            android:layout_below="@+id/textView5" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Service update time:"
+            android:id="@+id/textView6" android:layout_below="@+id/map_type_spinner"
+            android:layout_alignParentLeft="true" android:layout_alignParentStart="true"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/service_update_field" android:layout_below="@+id/textView6" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="60" android:layout_alignRight="@+id/textView5" android:layout_alignEnd="@+id/textView5"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="sec"
+            android:id="@+id/textView7" android:layout_alignTop="@+id/service_update_field"
+            android:layout_toRightOf="@+id/service_update_field" android:layout_toEndOf="@+id/service_update_field"
+            android:textAlignment="center" android:layout_alignBottom="@+id/service_update_field"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Search friends:"
+            android:id="@+id/textView8" android:layout_below="@+id/service_update_field"
+            android:layout_alignParentLeft="true" android:layout_alignParentStart="true"/>
+    <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:layout_below="@+id/textView8"
+            android:layout_alignRight="@+id/textView6" android:layout_alignEnd="@+id/textView6"
+            android:id="@+id/settingsRadioGroup">
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="By hobbies"
+                android:id="@+id/hobbiesRadio" android:checked="true"/>
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="By range"
+                android:id="@+id/rangeRadio" android:checked="false"/>
+    </RadioGroup>
+    <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/rangeField"
+            android:layout_alignBottom="@+id/settingsRadioGroup" android:layout_toRightOf="@+id/textView8"
+            android:layout_toEndOf="@+id/textView8"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="km"
+            android:id="@+id/textView9" android:layout_alignBottom="@+id/rangeField"
+            android:layout_toRightOf="@+id/rangeField" android:layout_toEndOf="@+id/rangeField"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:onClick="okButton"
+            android:id="@+id/okButton"
+            android:layout_below="@+id/rangeField" android:layout_toLeftOf="@+id/textView7"
+            android:layout_toStartOf="@+id/textView7"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:onClick="cancel"
+            android:id="@+id/cancel" android:layout_below="@+id/rangeField"
+            android:layout_toRightOf="@+id/settingsRadioGroup" android:layout_toEndOf="@+id/settingsRadioGroup"/>
+</RelativeLayout>

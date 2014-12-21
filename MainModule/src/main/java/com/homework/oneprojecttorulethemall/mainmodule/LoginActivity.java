@@ -21,10 +21,10 @@ public class LoginActivity extends Activity {
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             UserSingleton.getInstance().setUser(currentUser);
+            ParsePush.subscribeInBackground("One" + UserSingleton.getInstance().getUser().getObjectId());
             startActivity(new Intent(getApplicationContext(),MapsActivity.class));
             this.finish();
         }
-        ParsePush.subscribeInBackground("One" + UserSingleton.getInstance().getUser().getObjectId());
     }
 
     public void login(View v) {
@@ -51,6 +51,7 @@ public class LoginActivity extends Activity {
                             UserSingleton.getInstance().setUser(parseUser);
                             pd.cancel();
                             loginDialog.cancel();
+                            ParsePush.subscribeInBackground("One" + UserSingleton.getInstance().getUser().getObjectId());
                             startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                             LoginActivity.this.finish();
                         } else {
@@ -113,6 +114,7 @@ public class LoginActivity extends Activity {
                                     signUpDialog.cancel();
                                     startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
                                     //startActivity(new Intent(getApplicationContext(),MapsActivity.class));
+                                    ParsePush.subscribeInBackground("One" + UserSingleton.getInstance().getUser().getObjectId());
                                     LoginActivity.this.finish();
                                 } else {
                                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
