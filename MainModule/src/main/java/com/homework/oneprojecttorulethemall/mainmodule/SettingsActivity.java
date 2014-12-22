@@ -11,7 +11,7 @@ import android.widget.Spinner;
 public class SettingsActivity extends Activity {
 
     private SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    private SharedPreferences.Editor editor;
     private Spinner spinner;
     private String[] data = {"Hybrid", "Normal", "Satellite", "Terrain"};
 
