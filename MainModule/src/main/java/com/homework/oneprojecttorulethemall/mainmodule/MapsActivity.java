@@ -199,6 +199,7 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
     protected void onDestroy() {
         super.onDestroy();
         unbindService(this);
+        isFirstStart = true;
         googleApiClient.disconnect();
     }
 
