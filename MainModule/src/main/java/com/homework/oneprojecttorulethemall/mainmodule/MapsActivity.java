@@ -41,6 +41,7 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
     private FriendsAdapter adapter;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
+    private ParseGeoPoint currentGeoPoint;
     private FusedLocationProviderApi fusedAPI = LocationServices.FusedLocationApi;
     private long locationUpdateInterval = 2500;
     private static String mapType;
@@ -208,8 +209,13 @@ public class MapsActivity extends FragmentActivity implements ServiceConnection,
 
     }
 
+    public ParseGeoPoint getCurrentGeoPoint() {
+        return currentGeoPoint;
+    }
+
     @Override
     public void onLocationChanged(final Location location) {
+        currentGeoPoint = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
         ParseQuery<ParseObject> query = ParseQuery.getQuery("DATA");
         query.whereEqualTo("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
         query.getFirstInBackground(new GetCallback<ParseObject>() {

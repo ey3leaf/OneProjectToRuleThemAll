@@ -59,8 +59,13 @@
         <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="All"
+                android:id="@+id/allRadio" android:checked="true"/>
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="By hobbies"
-                android:id="@+id/hobbiesRadio" android:checked="true"/>
+                android:id="@+id/hobbiesRadio" android:checked="false"/>
         <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

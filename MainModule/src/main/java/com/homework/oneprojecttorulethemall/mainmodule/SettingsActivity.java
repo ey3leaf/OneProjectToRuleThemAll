@@ -5,20 +5,27 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 
 public class SettingsActivity extends Activity {
 
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     private Spinner spinner;
+    private EditText updateTimeField;
     private String[] data = {"Hybrid", "Normal", "Satellite", "Terrain"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
+
+        updateTimeField = (EditText) findViewById(R.id.service_update_field);
+        updateTimeField.setText("" + sharedPreferences.getInt("UPDATE_TIME", 60));
 
         spinner = (Spinner) findViewById(R.id.map_type_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, data);
@@ -27,9 +34,12 @@ public class SettingsActivity extends Activity {
     }
 
     public void okButton(View v) {
-        sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
-        editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.settingsRadioGroup);
         editor.putString("MAP", spinner.getSelectedItem().toString());
+        editor.putInt("SEARCH",radioGroup.getCheckedRadioButtonId());
+        editor.putInt("UPDATE_TIME", Integer.parseInt(updateTimeField.getText().toString()));
+
         editor.apply();
 
         MapsActivity.setMapType(spinner.getSelectedItem().toString());

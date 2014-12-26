@@ -2,6 +2,7 @@ package com.homework.oneprojecttorulethemall.mainmodule;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.widget.Toast;
@@ -10,7 +11,9 @@ import com.parse.*;
 import java.util.List;
 
 public class ParseService extends Service implements Runnable {
+
     private MapsActivity activity;
+    private SharedPreferences sharedPreferences;
 
     public void setActivity(MapsActivity activity) {
         this.activity = activity;
@@ -18,7 +21,9 @@ public class ParseService extends Service implements Runnable {
 
     @Override
     public void onCreate() {
+        sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
         new Thread(this).start();
+
     }
 
     @Override
@@ -30,17 +35,29 @@ public class ParseService extends Service implements Runnable {
 
     @Override
     public void run() {
+
         while (true) {
             parseDATA();
             parseMessages();
 
-            SystemClock.sleep(60000);
+            SystemClock.sleep(sharedPreferences.getInt("UPDATE_TIME", 60) * 100);
         }
     }
 
     private void parseDATA() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("DATA");
         query.whereNotEqualTo("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
+        switch (sharedPreferences.getInt("SEARCH",R.id.allRadio)){
+            case R.id.hobbiesRadio:
+               // query.whereContainedIn("HOBBIES",sharedPreferences.getStringSet("HOBBIES",""));
+                break;
+            case R.id.rangeRadio:
+                query.whereWithinKilometers("LOCATION",activity.getCurrentGeoPoint(),
+                        sharedPreferences.getInt("RANGE",1000));
+                break;
+            default:
+                break;
+        }
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {

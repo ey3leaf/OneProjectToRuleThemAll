@@ -74,6 +74,7 @@ public class ProfileActivity extends Activity {
         sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
         if (!sharedPreferences.getBoolean("active", false))
             startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+
         this.finish();
     }
 
