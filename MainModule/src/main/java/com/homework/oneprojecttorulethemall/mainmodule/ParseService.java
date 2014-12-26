@@ -47,13 +47,15 @@ public class ParseService extends Service implements Runnable {
     private void parseDATA() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("DATA");
         query.whereNotEqualTo("ID", ParseObject.createWithoutData("ID", UserSingleton.getInstance().getUser().getObjectId()));
-        switch (sharedPreferences.getInt("SEARCH",R.id.allRadio)){
+        switch (sharedPreferences.getInt("SEARCH", R.id.allRadio)) {
             case R.id.hobbiesRadio:
-               // query.whereContainedIn("HOBBIES",sharedPreferences.getStringSet("HOBBIES",""));
+                if (sharedPreferences.getStringSet("HOBBIES", null) != null) {
+                    query.whereContainedIn("HOBBIES", sharedPreferences.getStringSet("HOBBIES", null));
+                }
                 break;
             case R.id.rangeRadio:
-                query.whereWithinKilometers("LOCATION",activity.getCurrentGeoPoint(),
-                        sharedPreferences.getInt("RANGE",1000));
+                query.whereWithinKilometers("LOCATION", activity.getCurrentGeoPoint(),
+                        sharedPreferences.getInt("RANGE", 1000));
                 break;
             default:
                 break;

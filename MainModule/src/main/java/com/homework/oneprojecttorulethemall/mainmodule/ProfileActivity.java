@@ -15,7 +15,9 @@ import com.parse.*;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class ProfileActivity extends Activity {
@@ -87,15 +89,19 @@ public class ProfileActivity extends Activity {
 
     private List<String> getHobbies() {
         List<String> hobbies = new ArrayList<String>();
+        Set<String> sharedHobbies = new HashSet<String>();
         sharedPreferences = getSharedPreferences(UserSingleton.getInstance().getUser().getObjectId(), 0);
         editor = sharedPreferences.edit();
+
         for (CheckBox checkBox : checkBoxes) {
             editor.putBoolean(checkBox.getText().toString(), false);
             if (checkBox.isChecked()) {
                 hobbies.add(checkBox.getText().toString());
+                sharedHobbies.add(checkBox.getText().toString());
                 editor.putBoolean(checkBox.getText().toString(), true);
             }
         }
+        editor.putStringSet("HOBBIES",sharedHobbies);
         editor.apply();
         return hobbies;
     }

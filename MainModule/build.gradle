@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId "com.homework.oneprojecttorulethemall.mainmodule"
-        minSdkVersion 9
+        minSdkVersion 11
         targetSdkVersion 17
         versionCode 1
         versionName "1.0"
